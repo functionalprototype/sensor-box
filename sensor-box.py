@@ -8,6 +8,7 @@ import qwiic_bme280
 import time
 import sys
 
+DEBUG=False
 
 def main():
 	ccs811Sensor = qwiic_ccs811.QwiicCcs811()
@@ -35,7 +36,8 @@ def main():
 			tempCelsius, humidity, 
 			ccs811Sensor.CO2,ccs811Sensor.TVOC)
 			logEvent.logSensor(logString)
-			print(logString)
+			if DEBUG:
+				print(logString)
 
 		time.sleep(1)
 
