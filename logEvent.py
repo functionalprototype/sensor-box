@@ -9,5 +9,9 @@ import time
 
 def logEvent(s):
     now = time.time()
-    logger.logEventFile(now, s)
+    logger.logEventFile("event", now, s)
+
+def logSensor(s):
+    now = time.time()
+    logger.logEventFile("sensor",now, s)
 

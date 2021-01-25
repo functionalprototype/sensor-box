@@ -1,1 +1,2 @@
 eventFilePrefix = "events-"
+sensorFilePrefix = "sensors-"
