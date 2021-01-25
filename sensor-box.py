@@ -32,12 +32,24 @@ def main():
 
 		if ccs811Sensor.data_available():
 			ccs811Sensor.read_algorithm_results()
-			logString = '{:.2f},{:.2f},{:d},{:d}'.format(
-			tempCelsius, humidity, 
-			ccs811Sensor.CO2,ccs811Sensor.TVOC)
-			logEvent.logSensor(logString)
-			if DEBUG:
-				print(logString)
+			if (ccs811Sensor.CO2 > 2**15):
+				logString = '#error CO2 {:.2f}'.format(ccs811Sensor.CO2)
+				logEvent.logSensor(logString)
+				print("CO2 sensor out of range", ccs811Sensor.CO2)
+				
+			elif (ccs811Sensor.TVOC > 2**15):
+				print("tVOC sensor out of range",
+					 ccs811Sensor.TVOC)
+				logString = '#error tVOC {:.2f}'.format(ccs811Sensor.TVOC)
+				logEvent.logSensor(logString)
+				print("tVOC sensor out of range", ccs811Sensor.TVOC)
+			else:
+				logString = '{:.2f},{:.2f},{:d},{:d}'.format(
+				tempCelsius, humidity, 
+				ccs811Sensor.CO2,ccs811Sensor.TVOC)
+				logEvent.logSensor(logString)
+				if DEBUG:
+					print(logString)
 
 		time.sleep(1)
 
