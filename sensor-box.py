@@ -51,7 +51,7 @@ def main():
 				if DEBUG:
 					print(logString)
 
-		time.sleep(1)
+		time.sleep(60)
 
 
 if __name__ == '__main__':
