@@ -34,14 +34,14 @@ def main():
 			ccs811Sensor.read_algorithm_results()
 			if (ccs811Sensor.CO2 > 2**15):
 				logString = '#error CO2 {:.2f}'.format(ccs811Sensor.CO2)
-				logEvent.logSensor(logString)
+				logEvent.logEvent(logString)
 				print("CO2 sensor out of range", ccs811Sensor.CO2)
 				
 			elif (ccs811Sensor.TVOC > 2**15):
 				print("tVOC sensor out of range",
 					 ccs811Sensor.TVOC)
 				logString = '#error tVOC {:.2f}'.format(ccs811Sensor.TVOC)
-				logEvent.logSensor(logString)
+				logEvent.logEvent(logString)
 				print("tVOC sensor out of range", ccs811Sensor.TVOC)
 			else:
 				logString = '{:.2f},{:.2f},{:d},{:d}'.format(
