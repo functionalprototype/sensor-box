@@ -20,3 +20,6 @@
 
 eventFilePrefix = "events-"
 sensorFilePrefix = "sensors-"
+
+#EST
+timeZoneOffset = 5 * 3600

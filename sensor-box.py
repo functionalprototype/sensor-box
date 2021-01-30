@@ -41,8 +41,8 @@ def main():
 	ccs811Sensor.begin()
 	bme280Sensor.begin()
 
-	logEvent.logSensorHeader("#time,temp,humid,co2,tvoc")
-	logEvent.logEventHeader("#description of event")
+	logEvent.logSensorHeader("time,temp,humid,co2,tvoc")
+	logEvent.logEventHeader("description of event")
 
 	while True:
 

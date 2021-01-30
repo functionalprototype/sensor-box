@@ -27,17 +27,17 @@ import sys
 import time
 
 def logEventHeader(s):
-    now = time.time()
+    now = time.time() - constants.timeZoneOffset
     logger.logEventFileHeader("event", now, s)
 
 def logEvent(s):
-    now = time.time()
+    now = time.time() - constants.timeZoneOffset
     logger.logEventFile("event", now, s)
 
 def logSensorHeader(s):
-    now = time.time()
+    now = time.time() - constants.timeZoneOffset
     logger.logEventFileHeader("sensor", now, s)
 
 def logSensor(s):
-    now = time.time()
+    now = time.time() - constants.timeZoneOffset
     logger.logEventFile("sensor", now, s)
