@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Copyright (c) 2021 Jet Townsend
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,21 +25,12 @@
 import logger
 import constants
 
-import sys
-import time
+import argparse
 
-def logEventHeader(s):
-    now = time.time() - constants.timeZoneOffset
-    logger.logEventFileHeader("event", now, s)
+parser = argparse.ArgumentParser(description='log external events')
 
-def logEvent(s):
-    now = time.time() - constants.timeZoneOffset
-    logger.logEventFile("event", now, s)
+parser.add_argument('--event', metavar='e', help="description of event")
+parser.add_argument('--verbose', metavar='v', help="verbose mode")
+parser.add_argument('--help', metavar='h', help="display help")
+parser.add_argument('--inputfile', metavar='i', help="input file containing event description")
 
-def logSensorHeader(s):
-    now = time.time() - constants.timeZoneOffset
-    logger.logEventFileHeader("sensor", now, s)
-
-def logSensor(s):
-    now = time.time() - constants.timeZoneOffset
-    logger.logEventFile("sensor", now, s)
