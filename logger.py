@@ -23,6 +23,24 @@ import constants
 import sys
 from datetime import datetime
 
+
+def logEventHeader(s):
+    now = time.time()
+    logger.logEventFileHeader("event", now, s)
+
+def logEvent(s):
+    now = time.time()
+    logger.logEventFile("event", now, s)
+
+def logSensorHeader(s):
+    now = time.time()
+    logger.logEventFileHeader("sensor", now, s)
+
+def logSensor(s):
+    now = time.time()
+    logger.logEventFile("sensor", now, s)
+
+
 def logEventFile(category, now, s):
     dateNow = datetime.fromtimestamp(now)
     fileDate = dateNow.strftime("%Y-%m-%d")
