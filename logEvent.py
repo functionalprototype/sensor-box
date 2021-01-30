@@ -34,6 +34,3 @@ parser.add_argument('--verbose', metavar='v', help="verbose mode")
 parser.add_argument('--help', metavar='h', help="display help")
 parser.add_argument('--inputfile', metavar='i', help="input file containing event description")
 
-
-
-
