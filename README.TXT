@@ -10,3 +10,7 @@ This is not a replacement for fire alarms, CO2 detectors, or other
 safety devices.
 
 
+pip3 dependencies:
+
+sudo pip3 install sparkfun-qwiic
+sudo pip3 install adafruit-circuitpython-pm25
