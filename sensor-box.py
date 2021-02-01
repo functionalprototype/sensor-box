@@ -31,6 +31,7 @@ import sys
 import smbus
 
 DEBUG=False
+today = 1
 
 def main():
     ccs811Sensor = qwiic_ccs811.QwiicCcs811()
@@ -44,10 +45,13 @@ def main():
     ccs811Sensor.begin()
     bme280Sensor.begin()
 
-    logEvent.logSensorHeader("time,temp,humid,co2,tvoc,pm1,pm10,pm25")
-    logEvent.logEventHeader("description of event")
-
+    yesterday = 0
     while True:
+        today = time.strftime("%d")
+        if (yesterday != today):
+            logEvent.logSensorHeader("time,temp,humid,co2,tvoc,pm1,pm10,pm25")
+            logEvent.logEventHeader("description of event")
+            yesterday = today
 
         humidity = bme280Sensor.humidity
         tempCelsius = bme280Sensor.temperature_celsius
