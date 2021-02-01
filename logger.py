@@ -21,11 +21,11 @@
 import constants
 
 import sys
-from datetime import datetime
+import time
 
-def logEventFile(category, now, s):
-    dateNow = datetime.fromtimestamp(now)
-    fileDate = dateNow.strftime("%Y-%m-%d")
+def logEventFile(category, timestamp, s):
+    now = time.localtime()
+    fileDate = '{:04d}-{:02d}-{:02d}'.format(now.tm_year,now.tm_mon,now.tm_mday)
     if (category == "sensor"):
         fileName = constants.sensorFilePrefix + fileDate + ".log"
     elif (category == "event"):
@@ -33,13 +33,13 @@ def logEventFile(category, now, s):
     else:
         print("unrecognized category %s" % category)
         sys.exit(-1)
-    logEntry = f"{int(now)},{s}\n"
+    logEntry = f"{timestamp},{s}\n"
     with open(fileName, 'a') as f:
         f.write(logEntry)
 
-def logEventFileHeader(category, now, s):
-    dateNow = datetime.fromtimestamp(now)
-    fileDate = dateNow.strftime("%Y-%m-%d")
+def logEventFileHeader(category, s):
+    now = time.localtime()
+    fileDate = '{:04d}-{:02d}-{:02d}'.format(now.tm_year,now.tm_mon,now.tm_mday)
     if (category == "sensor"):
         fileName = constants.sensorFilePrefix + fileDate + ".log"
     elif (category == "event"):

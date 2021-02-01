@@ -21,23 +21,20 @@
 
 #local
 import logger
-import constants
 
 import sys
 import time
 
 def logEventHeader(s):
-    now = time.time() - constants.timeZoneOffset
-    logger.logEventFileHeader("event", now, s)
+    logger.logEventFileHeader("event", s)
 
 def logEvent(s):
-    now = time.time() - constants.timeZoneOffset
-    logger.logEventFile("event", now, s)
+    t = time.localtime()
+    logger.logEventFile("event", int(time.mktime(t)), s)
 
 def logSensorHeader(s):
-    now = time.time() - constants.timeZoneOffset
-    logger.logEventFileHeader("sensor", now, s)
+    logger.logEventFileHeader("sensor", s)
 
 def logSensor(s):
-    now = time.time() - constants.timeZoneOffset
-    logger.logEventFile("sensor", now, s)
+    t = time.localtime()
+    logger.logEventFile("sensor", int(time.mktime(t)), s)
