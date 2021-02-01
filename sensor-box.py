@@ -31,7 +31,7 @@ import sys
 import smbus
 
 DEBUG=False
-HASPM25=False
+HASPM25=True
 
 today = 1
 
@@ -51,8 +51,9 @@ def main():
 
     yesterday = 0
     while True:
-        today = time.strftime("%d")
+        today = time.localtime().tm_mday
         if (yesterday != today):
+            print("yesterday", yesterday, "not equal to today",today)
             logEvent.logSensorHeader("time,temp,humid,co2,tvoc,pm1,pm10,pm25")
             logEvent.logEventHeader("description of event")
             yesterday = today
