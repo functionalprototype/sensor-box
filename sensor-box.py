@@ -31,13 +31,17 @@ import sys
 import smbus
 
 DEBUG=False
+HASPM25=False
+
 today = 1
 
 def main():
     ccs811Sensor = qwiic_ccs811.QwiicCcs811()
     bme280Sensor = qwiic_bme280.QwiicBme280()
     pm25Sensor = smbus.SMBus(1)
-    
+    pm1count = -1
+    pm10count = -1
+    pm25count = -1
     if (ccs811Sensor.connected == False) or (bme280Sensor.connected == False):
         print("failed to connect to sensors")
         sys.exit(-1)
@@ -55,11 +59,12 @@ def main():
 
         humidity = bme280Sensor.humidity
         tempCelsius = bme280Sensor.temperature_celsius
-        pm25Data = pm25Sensor.read_i2c_block_data(0x12, 0x00, 32)
         
-        pm1count = (pm25Data[4]<<8) + pm25Data[5]
-        pm10count = (pm25Data[8]<<8) + pm25Data[9]
-        pm25count = (pm25Data[6]<<8) + pm25Data[7]
+        if (HASPM25):
+            pm25Data = pm25Sensor.read_i2c_block_data(0x12, 0x00, 32)
+            pm1count = (pm25Data[4]<<8) + pm25Data[5]
+            pm10count = (pm25Data[8]<<8) + pm25Data[9]
+            pm25count = (pm25Data[6]<<8) + pm25Data[7]
 
         ccs811Sensor.set_environmental_data(humidity, tempCelsius)
 
