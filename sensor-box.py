@@ -28,57 +28,66 @@ import qwiic_bme280
 import time
 import sys
 
+import smbus
+
 DEBUG=False
 
 def main():
-	ccs811Sensor = qwiic_ccs811.QwiicCcs811()
-	bme280Sensor = qwiic_bme280.QwiicBme280()
+    ccs811Sensor = qwiic_ccs811.QwiicCcs811()
+    bme280Sensor = qwiic_bme280.QwiicBme280()
+    pm25Sensor = smbus.SMBus(1)
+    
+    if (ccs811Sensor.connected == False) or (bme280Sensor.connected == False):
+        print("failed to connect to sensors")
+        sys.exit(-1)
 
-	if (ccs811Sensor.connected == False) or (bme280Sensor.connected == False):
-		print("failed to connect to sensors")
-		sys.exit(-1)
+    ccs811Sensor.begin()
+    bme280Sensor.begin()
+
+    logEvent.logSensorHeader("time,temp,humid,co2,tvoc,pm1,pm10,pm25")
+    logEvent.logEventHeader("description of event")
+
+    while True:
+
+        humidity = bme280Sensor.humidity
+        tempCelsius = bme280Sensor.temperature_celsius
+        pm25Data = pm25Sensor.read_i2c_block_data(0x12, 0x00, 32)
         
-	ccs811Sensor.begin()
-	bme280Sensor.begin()
+        pm1count = (pm25Data[4]<<8) + pm25Data[5]
+        pm10count = (pm25Data[8]<<8) + pm25Data[9]
+        pm25count = (pm25Data[6]<<8) + pm25Data[7]
 
-	logEvent.logSensorHeader("time,temp,humid,co2,tvoc")
-	logEvent.logEventHeader("description of event")
+        ccs811Sensor.set_environmental_data(humidity, tempCelsius)
 
-	while True:
+        if ccs811Sensor.data_available():
+            ccs811Sensor.read_algorithm_results()
+            if (ccs811Sensor.CO2 > 2**15):
+                logString = '#error CO2 {:.2f}'.format(ccs811Sensor.CO2)
+                logEvent.logEvent(logString)
+                print("CO2 sensor out of range", ccs811Sensor.CO2)
+            elif (ccs811Sensor.TVOC > 2**15):
+                print("tVOC sensor out of range", ccs811Sensor.TVOC)
+                logString = '#error tVOC {:.2f}'.format(ccs811Sensor.TVOC)
+                logEvent.logEvent(logString)
+                print("tVOC sensor out of range", ccs811Sensor.TVOC)
+            else:
+                logString = '{:.2f},{:.2f},{:d},{:d},{:d},{:d},{:d}'.format(
+                    tempCelsius, humidity, 
+                    ccs811Sensor.CO2,
+                    ccs811Sensor.TVOC,
+                    pm1count, pm10count, pm25count)
+                logEvent.logSensor(logString)
+                if DEBUG:
+                    print(logString)
 
-		humidity = bme280Sensor.humidity
-		tempCelsius = bme280Sensor.temperature_celsius
-		ccs811Sensor.set_environmental_data(humidity, tempCelsius)
-
-		if ccs811Sensor.data_available():
-			ccs811Sensor.read_algorithm_results()
-			if (ccs811Sensor.CO2 > 2**15):
-				logString = '#error CO2 {:.2f}'.format(ccs811Sensor.CO2)
-				logEvent.logEvent(logString)
-				print("CO2 sensor out of range", ccs811Sensor.CO2)
-				
-			elif (ccs811Sensor.TVOC > 2**15):
-				print("tVOC sensor out of range",
-					 ccs811Sensor.TVOC)
-				logString = '#error tVOC {:.2f}'.format(ccs811Sensor.TVOC)
-				logEvent.logEvent(logString)
-				print("tVOC sensor out of range", ccs811Sensor.TVOC)
-			else:
-				logString = '{:.2f},{:.2f},{:d},{:d}'.format(
-				tempCelsius, humidity, 
-				ccs811Sensor.CO2,ccs811Sensor.TVOC)
-				logEvent.logSensor(logString)
-				if DEBUG:
-					print(logString)
-
-		time.sleep(60)
+        time.sleep(60)
 
 
 if __name__ == '__main__':
-	try:
-		main()
-	except (KeyboardInterrupt, SystemExit) as exErr:
-		print("\keyboard interrupt")
-		sys.exit(0)
+    try:
+        main()
+    except (KeyboardInterrupt, SystemExit) as exErr:
+        print("\keyboard interrupt")
+        sys.exit(0)
 
 
