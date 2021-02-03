@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 import constants
-import logEvent
+import logger
 
 import qwiic_ccs811
 import qwiic_bme280
@@ -54,8 +54,8 @@ def main():
         today = time.localtime().tm_mday
         if (yesterday != today):
             print("yesterday", yesterday, "not equal to today",today)
-            logEvent.logSensorHeader("time,temp,humid,co2,tvoc,pm1,pm10,pm25")
-            logEvent.logEventHeader("description of event")
+            logger.logSensorHeader("time,temp,humid,co2,tvoc,pm1,pm10,pm25")
+            logger.logEventHeader("description of event")
             yesterday = today
 
         humidity = bme280Sensor.humidity
@@ -73,12 +73,12 @@ def main():
             ccs811Sensor.read_algorithm_results()
             if (ccs811Sensor.CO2 > 2**15):
                 logString = '#error CO2 {:.2f}'.format(ccs811Sensor.CO2)
-                logEvent.logEvent(logString)
+                logger.logEvent(logString)
                 print("CO2 sensor out of range", ccs811Sensor.CO2)
             elif (ccs811Sensor.TVOC > 2**15):
                 print("tVOC sensor out of range", ccs811Sensor.TVOC)
                 logString = '#error tVOC {:.2f}'.format(ccs811Sensor.TVOC)
-                logEvent.logEvent(logString)
+                logger.logEvent(logString)
                 print("tVOC sensor out of range", ccs811Sensor.TVOC)
             else:
                 logString = '{:.2f},{:.2f},{:d},{:d},{:d},{:d},{:d}'.format(
@@ -86,7 +86,7 @@ def main():
                     ccs811Sensor.CO2,
                     ccs811Sensor.TVOC,
                     pm1count, pm10count, pm25count)
-                logEvent.logSensor(logString)
+                logger.logSensor(logString)
                 if DEBUG:
                     print(logString)
 

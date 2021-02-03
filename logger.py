@@ -51,3 +51,17 @@ def logEventFileHeader(category, s):
     with open(fileName, 'a') as f:
         f.write(logEntry)
 
+def logEventHeader(s):
+    logEventFileHeader("event", s)
+
+def logEvent(s):
+    t = time.localtime()
+    logEventFile("event", int(time.mktime(t)), s)
+
+def logSensorHeader(s):
+    logEventFileHeader("sensor", s)
+
+def logSensor(s):
+    t = time.localtime()
+    logEventFile("sensor", int(time.mktime(t)), s)
+

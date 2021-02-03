@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Copyright (c) 2021 Jet Townsend
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,23 +20,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 #local
 import logger
+import constants
 
+import argparse
 import sys
 import time
 
-def logEventHeader(s):
-    logger.logEventFileHeader("event", s)
 
-def logEvent(s):
-    t = time.localtime()
-    logger.logEventFile("event", int(time.mktime(t)), s)
+parser = argparse.ArgumentParser(description='log external events')
 
-def logSensorHeader(s):
-    logger.logEventFileHeader("sensor", s)
+parser.add_argument('--event', '-e', help="description of event", default="missing")
+parser.add_argument('--verbose', '-v', action='count', default=0)
+#parser.add_argument('--inputfile', "-i", help="input file containing event description")
+args = parser.parse_args()
 
-def logSensor(s):
-    t = time.localtime()
-    logger.logEventFile("sensor", int(time.mktime(t)), s)
+if (args.event == "missing"):
+    print("no event TODO display help")
+    exit(-1)
+
+if (args.verbose):
+    print("logging " + args.event)
+logger.logEvent(args.event)
