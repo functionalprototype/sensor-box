@@ -1,0 +1,11 @@
+sorted by priority
+
+- wrapper/parent script that detects crash, restarts sensor, reports crash
+- UI that displays current data (develop on desktop)
+- UI commands for entering tasks/activities
+- monitor network for interesting activity
+- can we monitor NEST communications?  Other doorbell detectors?
+- design enclosure with touchscreen sensors on bottom, screw mounts
+- angled display stand for usage on counter
+
+
