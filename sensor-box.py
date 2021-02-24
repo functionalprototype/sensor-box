@@ -36,6 +36,7 @@ HASPM25=True
 today = 1
 
 def main():
+    # using CCS811 mode 1 for internal measurement every second
     ccs811Sensor = qwiic_ccs811.QwiicCcs811()
     bme280Sensor = qwiic_bme280.QwiicBme280()
     pm25Sensor = smbus.SMBus(1)
@@ -54,12 +55,13 @@ def main():
         today = time.localtime().tm_mday
         if (yesterday != today):
             print("yesterday", yesterday, "not equal to today",today)
-            logger.logSensorHeader("time,temp,humid,co2,tvoc,pm1,pm10,pm25")
+            logger.logSensorHeader("time,temp,humid,CO2,tVOC,PM1.0,PM2.5,PM10.0")
             logger.logEventHeader("description of event")
             yesterday = today
 
         humidity = bme280Sensor.humidity
-        tempCelsius = bme280Sensor.temperature_celsius
+        #my stretto reads 4C lower than the reported temperature
+        tempCelsius = bme280Sensor.temperature_celsius - 4
         
         if (HASPM25):
             pm25Data = pm25Sensor.read_i2c_block_data(0x12, 0x00, 32)
@@ -85,7 +87,7 @@ def main():
                     tempCelsius, humidity, 
                     ccs811Sensor.CO2,
                     ccs811Sensor.TVOC,
-                    pm1count, pm10count, pm25count)
+                    pm1count, pm25count, pm10count)
                 logger.logSensor(logString)
                 if DEBUG:
                     print(logString)
