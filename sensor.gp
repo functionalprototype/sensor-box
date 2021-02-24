@@ -2,9 +2,8 @@
 # to get the value "-5" for your TZ, use 
 # date +%z
 set xtics 3600
-set ytics 100
-set ytics 100
 set grid ytics
+set ytics 100
 set format y "%g"
 set xdata time
 set timefmt "%s"
