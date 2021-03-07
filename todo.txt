@@ -8,4 +8,11 @@ sorted by priority
 - design enclosure with touchscreen sensors on bottom, screw mounts
 - angled display stand for usage on counter
 
-
+Enclosure (need to draw this)
+- ac adapter on top to keep heat off of enclosure
+- co2/voc sensor on bottom
+- ppm sensor on side
+- vent holes on middle front (over CPU) and top
+- leave slot for changing sd card
+- leave slot for connecting I2C sensors
+- leave slot for camera
