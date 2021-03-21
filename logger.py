@@ -22,14 +22,16 @@ import constants
 
 import sys
 import time
+import socket
 
 def logEventFile(category, timestamp, s):
     now = time.localtime()
     fileDate = '{:04d}-{:02d}-{:02d}'.format(now.tm_year,now.tm_mon,now.tm_mday)
+    hostname = socket.gethostname()
     if (category == "sensor"):
-        fileName = constants.sensorFilePrefix + fileDate + ".log"
+        fileName = hostname + "-" + constants.sensorFilePrefix + fileDate + ".log"
     elif (category == "event"):
-        fileName = constants.eventFilePrefix + fileDate + ".log"
+        fileName = hostname + "-" + constants.eventFilePrefix + fileDate + ".log"
     else:
         print("unrecognized category %s" % category)
         sys.exit(-1)
@@ -40,10 +42,11 @@ def logEventFile(category, timestamp, s):
 def logEventFileHeader(category, s):
     now = time.localtime()
     fileDate = '{:04d}-{:02d}-{:02d}'.format(now.tm_year,now.tm_mon,now.tm_mday)
+    hostname = socket.gethostname()
     if (category == "sensor"):
-        fileName = constants.sensorFilePrefix + fileDate + ".log"
+        fileName = hostname + "-" + constants.sensorFilePrefix + fileDate + ".log"
     elif (category == "event"):
-        fileName = constants.eventFilePrefix + fileDate + ".log"
+        fileName = hostname + "-" + constants.eventFilePrefix + fileDate + ".log"
     else:
         print("unrecognized category %s" % category)
         sys.exit(-1)
