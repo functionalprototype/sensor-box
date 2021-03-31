@@ -22,6 +22,7 @@
 
 import constants
 import logger
+import os
 
 import qwiic_ccs811
 import qwiic_bme280
@@ -36,6 +37,7 @@ HASPM25=True
 today = 1
 
 def main():
+    os.chdir("/home/pi/Projects/sensor-box")
     # using CCS811 mode 1 for internal measurement every second
     ccs811Sensor = qwiic_ccs811.QwiicCcs811()
     bme280Sensor = qwiic_bme280.QwiicBme280()

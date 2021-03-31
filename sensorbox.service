@@ -1,0 +1,17 @@
+[Unit]
+Description=Environmental Sensor Box
+
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+ExecStart=/home/pi/Projects/sensor-box/sensor-box.py
+Restart=on-failure
+RestartSec=10
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

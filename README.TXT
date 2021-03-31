@@ -14,3 +14,11 @@ pip3 dependencies:
 
 sudo pip3 install sparkfun-qwiic
 sudo pip3 install adafruit-circuitpython-pm25
+
+
+setting up systemd:
+
+sudo cp -i sensorbox.service /etc/systemd/system/sensorbox.service 
+sudo systemctl daemon-reload
+sudo systemctl enable sensorbox
+sudo systemctl start sensorbox
