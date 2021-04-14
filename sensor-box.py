@@ -32,7 +32,7 @@ import sys
 import smbus
 
 DEBUG=False
-HASPM25=True
+HASPM25=False
 
 today = 1
 
@@ -41,7 +41,8 @@ def main():
     # using CCS811 mode 1 for internal measurement every second
     ccs811Sensor = qwiic_ccs811.QwiicCcs811()
     bme280Sensor = qwiic_bme280.QwiicBme280()
-    pm25Sensor = smbus.SMBus(1)
+    if (HASPM25):
+        pm25Sensor = smbus.SMBus(1)
     pm1count = -1
     pm10count = -1
     pm25count = -1
@@ -56,7 +57,7 @@ def main():
     while True:
         today = time.localtime().tm_mday
         if (yesterday != today):
-            print("yesterday", yesterday, "not equal to today",today)
+            #print("yesterday", yesterday, "not equal to today",today)
             logger.logSensorHeader("time,temp,humid,CO2,tVOC,PM1.0,PM2.5,PM10.0")
             logger.logEventHeader("description of event")
             yesterday = today
@@ -78,12 +79,9 @@ def main():
             if (ccs811Sensor.CO2 > 2**15):
                 logString = '#error CO2 {:.2f}'.format(ccs811Sensor.CO2)
                 logger.logEvent(logString)
-                print("CO2 sensor out of range", ccs811Sensor.CO2)
             elif (ccs811Sensor.TVOC > 2**15):
-                print("tVOC sensor out of range", ccs811Sensor.TVOC)
                 logString = '#error tVOC {:.2f}'.format(ccs811Sensor.TVOC)
                 logger.logEvent(logString)
-                print("tVOC sensor out of range", ccs811Sensor.TVOC)
             else:
                 logString = '{:.2f},{:.2f},{:d},{:d},{:d},{:d},{:d}'.format(
                     tempCelsius, humidity, 
