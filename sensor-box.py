@@ -58,7 +58,10 @@ def main():
         today = time.localtime().tm_mday
         if (yesterday != today):
             #print("yesterday", yesterday, "not equal to today",today)
+            uptime = os.popen('uptime -s').read() [:-1]
+            logger.logSensorHeader("boot time " + uptime)
             logger.logSensorHeader("time,temp,humid,CO2,tVOC,PM1.0,PM2.5,PM10.0")
+            logger.logEventHeader("boot time " + uptime)
             logger.logEventHeader("description of event")
             yesterday = today
 
