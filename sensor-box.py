@@ -63,7 +63,7 @@ def main():
             logger.logSensorHeader("#boot time " + uptime)
             logger.logSensorHeader("time,temp,humid,CO2,tVOC,PM1.0,PM2.5,PM10.0")
             logger.logEventHeader("#boot time " + uptime)
-            logger.logEventHeader("description of event")
+            logger.logEventHeader("#description of event")
             yesterday = today
 
         humidity = bme280Sensor.humidity
