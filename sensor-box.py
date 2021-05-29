@@ -31,8 +31,8 @@ import sys
 
 import smbus
 
-DEBUG=False
-HASPM25=True
+DEBUG=True
+HASPM25=False
 
 today = 1
 
@@ -69,6 +69,10 @@ def main():
             logger.logEventHeader("#boot time " + uptime)
             logger.logEventHeader("#description of event")
             yesterday = today
+
+        if ((time.localtime().tm_min % 10) == 0):
+            baseline = ccs811Sensor.get_baseline()
+            logger.logEvent("#baseline " + str(baseline))
 
         humidity = bme280Sensor.humidity
         #my stretto reads 4C lower than the reported temperature
