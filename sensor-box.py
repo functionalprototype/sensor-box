@@ -41,8 +41,7 @@ def checkBaseline(baseValues):
         == baseValues[3]
         == baseValues[4]
         == baseValues[5]):
-        if (DEBUG):
-            logger.logEvent("all baselines equal")
+        logger.logEvent("all baselines equal, returning True")
         return True
 
     min = 65530 # initialization level
