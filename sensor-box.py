@@ -31,8 +31,8 @@ import smbus
 import constants
 import logger
 
-DEBUG=True
-HASPM25=False
+DEBUG=False
+HASPM25=True
 
 def checkBaseline(baseValues):
     if (baseValues[0]
