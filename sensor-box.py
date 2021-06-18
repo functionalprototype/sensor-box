@@ -22,6 +22,7 @@
 
 import os
 import time
+import datetime
 import sys
 
 import qwiic_ccs811
@@ -31,8 +32,8 @@ import smbus
 import constants
 import logger
 
-DEBUG=False
-HASPM25=True
+DEBUG=True
+HASPM25=False
 
 def checkBaseline(baseValues):
     if (baseValues[0]
@@ -69,6 +70,7 @@ def checkBaseline(baseValues):
 
 def main():
     os.chdir("/home/pi/Projects/sensor-box")
+    logger.logEvent("sensor-box.py started at " + str(datetime.datetime.now()))
     # using CCS811 mode 1 for internal measurement every second
     ccs811Sensor = qwiic_ccs811.QwiicCcs811()
     bme280Sensor = qwiic_bme280.QwiicBme280()
@@ -89,6 +91,8 @@ def main():
     baseValues = [ 0, 0, 0, 0, 0, 0]
     baseValueSet = False
     baseIndex = 0
+
+
     while True:
         today = time.localtime().tm_mday
         if (yesterday != today):
@@ -112,6 +116,10 @@ def main():
             interval = 10
             if ((time.localtime().tm_min % interval) == 0):
                 baseline = ccs811Sensor.get_baseline()
+                if (baseline >= constants.maxBaseline):
+                    if (DEBUG):
+                        logger.logEvent("baseline too high, using 0: " + str(baseline))
+                    baseline = 0
                 logger.logEvent("#baseline " + str(interval) + " min read " + str(baseline))
                 baseValues[baseIndex] = baseline
                 baseIndex +=1
@@ -129,8 +137,6 @@ def main():
                 logger.logEvent("#baseline " + str(interval) + " min read " + str(baseline))
 
         humidity = bme280Sensor.humidity
-        #my stretto reads 4C lower than the reported temperature
-        tempCelsius = bme280Sensor.temperature_celsius - 4
         
         if (HASPM25):
             pm25Data = pm25Sensor.read_i2c_block_data(0x12, 0x00, 32)
@@ -138,7 +144,11 @@ def main():
             pm10count = (pm25Data[8]<<8) + pm25Data[9]
             pm25count = (pm25Data[6]<<8) + pm25Data[7]
 
+        tempCelsius = bme280Sensor.temperature_celsius
         ccs811Sensor.set_environmental_data(humidity, tempCelsius)
+
+        #TODO my stretto reads 4C lower than the reported temperature
+        #tempCelsius -= 4
 
         if ccs811Sensor.data_available():
             ccs811Sensor.read_algorithm_results()
