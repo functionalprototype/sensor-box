@@ -33,7 +33,7 @@ import constants
 import logger
 
 DEBUG=False
-HASPM25=Truee
+HASPM25=True
 
 def checkBaseline(baseValues):
     if (baseValues[0]
