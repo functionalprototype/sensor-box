@@ -1,5 +1,7 @@
 sorted by priority
 
+- log inital baseline set under controlled conditions, re-use and
+  log differences in later baselines
 - wrapper/parent script that detects crash, restarts sensor, reports crash
 - UI that displays current data (develop on desktop)
 - UI commands for entering tasks/activities
@@ -16,3 +18,7 @@ Enclosure (need to draw this)
 - leave slot for changing sd card
 - leave slot for connecting I2C sensors
 - leave slot for camera
+
+
+blog:
+use 19 jun data as an example of initializing with the windows open vs. winter vs. initializing under a cup with the windows open
