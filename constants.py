@@ -21,3 +21,4 @@
 eventFilePrefix = "events-"
 sensorFilePrefix = "sensors-"
 maxBaseline = 65000 #65534 is the just-booted value
+hostname = "undefined"

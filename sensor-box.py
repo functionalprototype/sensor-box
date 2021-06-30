@@ -21,9 +21,11 @@
 # SOFTWARE.
 
 import os
+from os.path import exists
 import time
 import datetime
 import sys
+import socket
 
 import qwiic_ccs811
 import qwiic_bme280
@@ -32,8 +34,9 @@ import smbus
 import constants
 import logger
 
-DEBUG=False
-HASPM25=True
+DEBUG=True
+HASPM25=False
+baseline = constants.maxBaseline
 
 def checkBaseline(baseValues):
     if (baseValues[0]
@@ -69,6 +72,12 @@ def checkBaseline(baseValues):
     return False
 
 def main():
+    constants.hostname = socket.gethostname()
+    if ((len(constants.hostname) < 1)
+        or (constants.hostname == "undefined")):
+        print("could not determine hostname")
+        sys.exit()
+
     os.chdir("/home/pi/Projects/sensor-box")
     logger.logEvent("sensor-box.py started at " + str(datetime.datetime.now()))
     # using CCS811 mode 1 for internal measurement every second
@@ -92,6 +101,14 @@ def main():
     baseValueSet = False
     baseIndex = 0
 
+    config = constants.hostname + ".conf"
+    if (exists(config)):
+        with open(config) as c:
+            baseline = c.read()
+            ccs811Sensor.set_baseline(int(baseline))
+            baseValueSet = True
+            if (DEBUG):
+                print("read baseline from " + config)
 
     while True:
         today = time.localtime().tm_mday
@@ -100,7 +117,6 @@ def main():
                 print("yesterday", yesterday, "not equal to today",today)
                 logger.logEvent("yesterday "  + str(yesterday) + " not equal to today " + str(today))
             uptime = os.popen('uptime -s').read() [:-1]
-# TODO: should we log the time the script started?
             logger.logSensorHeader("#boot time " + uptime)
             logger.logSensorHeader("time,temp,humid,CO2,tVOC,PM1.0,PM2.5,PM10.0")
             logger.logEventHeader("#boot time " + uptime)
@@ -110,8 +126,6 @@ def main():
             logger.logEvent("#baseline at day rollover " + str(baseline))
             yesterday = today
 
-# TODO: should we store this value and re-use it every time a day rolls over?
-#       or should we restart the CCS881?
         if (baseValueSet == False):
             interval = 10
             if ((time.localtime().tm_min % interval) == 0):
@@ -129,6 +143,8 @@ def main():
                 if (checkBaseline(baseValues)):
                     logger.logEvent("#baseline set to " + str(baseline))
                     ccs811Sensor.set_baseline(baseline)
+                    with open(config, 'w') as c:
+                        c.write(str(baseline))
                     baseValueSet = True
         else:
             interval = 60
