@@ -13,7 +13,10 @@ safety devices.
 - pip3 dependencies:
 
 sudo pip3 install sparkfun-qwiic
+# for adafruit pm25
 sudo pip3 install adafruit-circuitpython-pm25
+# for sparkfun sps30
+pip3 install sps30
 
 - tweak I2C:
 
