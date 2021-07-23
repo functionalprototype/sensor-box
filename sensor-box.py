@@ -30,12 +30,15 @@ import socket
 import qwiic_ccs811
 import qwiic_bme280
 import smbus
+import sps30
 
 import constants
 import logger
 
 DEBUG=True
-HASPM25=False
+HAS_PM25=False
+HAS_SPS30=True
+
 baseline = constants.maxBaseline
 
 def checkBaseline(baseValues):
@@ -83,11 +86,23 @@ def main():
     # using CCS811 mode 1 for internal measurement every second
     ccs811Sensor = qwiic_ccs811.QwiicCcs811()
     bme280Sensor = qwiic_bme280.QwiicBme280()
-    if (HASPM25):
+    if (HAS_PM25):
         pm25Sensor = smbus.SMBus(1)
+    if (HAS_SPS30):
+        sps30Sensor = sps30.SPS30(1)
+        sps30Sensor.start_measurement()
+        # start_measurement() can take up to 20ms, so to be safe:
+        time.sleep(1) 
     pm1count = -1
-    pm10count = -1
     pm25count = -1
+    pm40count = -1
+    pm10count = -1
+    nc05count = -1
+    nc1count = -1
+    nc25count = -1
+    nc40count = -1
+    nc10count = -1
+    particleSize = -1
     if (ccs811Sensor.connected == False) or (bme280Sensor.connected == False):
         logger.logEvent("failed to connect to sensors")
         sys.exit(-1)
@@ -154,12 +169,26 @@ def main():
 
         humidity = bme280Sensor.humidity
         
-        if (HASPM25):
+        if (HAS_PM25):
             pm25Data = pm25Sensor.read_i2c_block_data(0x12, 0x00, 32)
             pm1count = (pm25Data[4]<<8) + pm25Data[5]
             pm10count = (pm25Data[8]<<8) + pm25Data[9]
             pm25count = (pm25Data[6]<<8) + pm25Data[7]
+        if (HAS_SPS30):
+            if sps30Sensor.read_data_ready_flag():
+                sps30Sensor.read_measured_values()
+                print ("PM1.0 Value in µg/m3: " + str(sps30Sensor.dict_values['pm1p0']))
+                print ("PM2.5 Value in µg/m3: " + str(sps30Sensor.dict_values['pm2p5']))
+                print ("PM4.0 Value in µg/m3: " + str(sps30Sensor.dict_values['pm4p0']))
+                print ("PM10.0 Value in µg/m3: " + str(sps30Sensor.dict_values['pm10p0']))
+                print ("NC0.5 Value in #/0.1L: " + str(sps30Sensor.dict_values['nc0p5'] * .0001))    # NC: Number of Concentration 
+                print ("NC1.0 Value in #/0.1L: " + str(sps30Sensor.dict_values['nc1p0'] * .0001))
+                print ("NC2.5 Value in #/0.1L: " + str(sps30Sensor.dict_values['nc2p5'] * .0001))
+                print ("NC4.0 Value in #/0.1L: " + str(sps30Sensor.dict_values['nc4p0'] * .0001))
+                print ("NC10.0 Value in #/0.1L: " + str(sps30Sensor.dict_values['nc10p0'] * .0001))
+                print ("Typical Particle Size in µm: " + str(sps30Sensor.dict_values['typical']))	
 
+            
         tempCelsius = bme280Sensor.temperature_celsius
         ccs811Sensor.set_environmental_data(humidity, tempCelsius)
 
