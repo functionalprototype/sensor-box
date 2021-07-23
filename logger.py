@@ -27,6 +27,7 @@ import socket
 def logEventFile(category, timestamp, s):
     now = time.localtime()
     fileDate = '{:04d}-{:02d}-{:02d}'.format(now.tm_year,now.tm_mon,now.tm_mday)
+    setHostname();
     if (category == "sensor"):
         fileName = constants.hostname + "-" + constants.sensorFilePrefix + fileDate + ".log"
     elif (category == "event"):
@@ -41,6 +42,7 @@ def logEventFile(category, timestamp, s):
 def logEventFileHeader(category, s):
     now = time.localtime()
     fileDate = '{:04d}-{:02d}-{:02d}'.format(now.tm_year,now.tm_mon,now.tm_mday)
+    setHostname();
     if (category == "sensor"):
         fileName = constants.hostname + "-" + constants.sensorFilePrefix + fileDate + ".log"
     elif (category == "event"):
@@ -65,4 +67,11 @@ def logSensorHeader(s):
 def logSensor(s):
     t = time.localtime()
     logEventFile("sensor", int(time.mktime(t)), s)
+
+def setHostname():
+    constants.hostname = socket.gethostname()
+    if ((len(constants.hostname) < 1)
+        or (constants.hostname == "undefined")):
+        print("could not determine hostname")
+        sys.exit()
 
