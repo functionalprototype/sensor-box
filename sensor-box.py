@@ -157,7 +157,9 @@ def main():
             if ((time.localtime().tm_min % interval) == 0):
                 baseline = ccs811Sensor.get_baseline()
                 logger.logEvent("#baseline " + str(interval) + " min read " + str(baseline))
-
+                if (baseline != baseValue) and (baseValueSet == True):
+                    logger.logEvent("#baseline does not match baseValue, resetting")
+                    ccs811Sensor.set_baseline(int(baseValue))
         humidity = bme280Sensor.humidity
         
         if (HASPM25):
