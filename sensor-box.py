@@ -99,13 +99,14 @@ def main():
     today = 1
     baseValues = [ 0, 0, 0, 0, 0, 0]
     baseValueSet = False
+    baseValue = 0
     baseIndex = 0
 
     config = constants.hostname + ".conf"
     if (exists(config)):
         with open(config) as c:
-            baseline = c.read()
-            ccs811Sensor.set_baseline(int(baseline))
+            baseValue = c.read()
+            ccs811Sensor.set_baseline(int(baseValue))
             baseValueSet = True
             if (DEBUG):
                 print("read baseline from " + config)
@@ -125,7 +126,11 @@ def main():
             baseline = ccs811Sensor.get_baseline()
             logger.logEvent("#baseline at day rollover " + str(baseline))
             yesterday = today
-
+            if (baseline != baseValue) and (baseValueSet == True):
+                logger.logEvent("#baseline does not match baseValue, resetting")
+                ccs811Sensor.set_baseline(int(baseValue))
+                
+            
         if (baseValueSet == False):
             interval = 10
             if ((time.localtime().tm_min % interval) == 0):
@@ -142,9 +147,10 @@ def main():
                     baseIndex = 0
                 if (checkBaseline(baseValues)):
                     logger.logEvent("#baseline set to " + str(baseline))
-                    ccs811Sensor.set_baseline(baseline)
+                    baseValue = baseline
+                    ccs811Sensor.set_baseline(baseValue)
                     with open(config, 'w') as c:
-                        c.write(str(baseline))
+                        c.write(str(baseValue))
                     baseValueSet = True
         else:
             interval = 60
