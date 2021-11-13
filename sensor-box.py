@@ -105,8 +105,8 @@ def main():
     config = constants.hostname + ".conf"
     if (exists(config)):
         with open(config) as c:
-            baseValue = c.read()
-            ccs811Sensor.set_baseline(int(baseValue))
+            baseValue = int(c.read())
+            ccs811Sensor.set_baseline(baseValue)
             baseValueSet = True
             if (DEBUG):
                 print("read baseline from " + config)
@@ -127,8 +127,8 @@ def main():
             logger.logEvent("#baseline at day rollover " + str(baseline))
             yesterday = today
             if (baseline != baseValue) and (baseValueSet == True):
-                logger.logEvent("#baseline does not match baseValue, resetting")
-                ccs811Sensor.set_baseline(int(baseValue))
+                logger.logEvent("#baseline " + str(baseline) + " does not match baseValue " + str(baseValue) + ", resetting")
+                ccs811Sensor.set_baseline(baseValue)
                 
             
         if (baseValueSet == False):
@@ -153,13 +153,14 @@ def main():
                         c.write(str(baseValue))
                     baseValueSet = True
         else:
-            interval = 60
+#            interval = 60
+            interval = 10
             if ((time.localtime().tm_min % interval) == 0):
                 baseline = ccs811Sensor.get_baseline()
                 logger.logEvent("#baseline " + str(interval) + " min read " + str(baseline))
                 if (baseline != baseValue) and (baseValueSet == True):
-                    logger.logEvent("#baseline does not match baseValue, resetting")
-                    ccs811Sensor.set_baseline(int(baseValue))
+                    logger.logEvent("#baseline " + str(baseline) + " does not match baseValue " + str(baseValue) + ", resetting")
+                    ccs811Sensor.set_baseline(baseValue)
         humidity = bme280Sensor.humidity
         
         if (HASPM25):
