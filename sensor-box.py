@@ -34,7 +34,7 @@ import smbus
 import constants
 import logger
 
-DEBUG=True
+DEBUG=False
 HASPM25=False
 baseline = constants.maxBaseline
 
@@ -127,7 +127,8 @@ def main():
             logger.logEvent("#baseline at day rollover " + str(baseline))
             yesterday = today
             if (baseline != baseValue) and (baseValueSet == True):
-                logger.logEvent("#baseline " + str(baseline) + " does not match baseValue " + str(baseValue) + ", resetting")
+                if (DEBUG):
+                    logger.logEvent("#baseline " + str(baseline) + " does not match baseValue " + str(baseValue) + ", resetting")
                 ccs811Sensor.set_baseline(baseValue)
                 
             
@@ -139,7 +140,8 @@ def main():
                     if (DEBUG):
                         logger.logEvent("baseline too high, using 0: " + str(baseline))
                     baseline = 0
-                logger.logEvent("#baseline " + str(interval) + " min read " + str(baseline))
+                if (DEBUG):
+                    logger.logEvent("#baseline " + str(interval) + " min read " + str(baseline))
                 baseValues[baseIndex] = baseline
                 baseIndex +=1
                 logger.logEvent("#basevalues " + str(baseValues))
@@ -153,13 +155,14 @@ def main():
                         c.write(str(baseValue))
                     baseValueSet = True
         else:
-#            interval = 60
             interval = 10
             if ((time.localtime().tm_min % interval) == 0):
                 baseline = ccs811Sensor.get_baseline()
-                logger.logEvent("#baseline " + str(interval) + " min read " + str(baseline))
+                if (DEBUG):
+                    logger.logEvent("#baseline " + str(interval) + " min read " + str(baseline))
                 if (baseline != baseValue) and (baseValueSet == True):
-                    logger.logEvent("#baseline " + str(baseline) + " does not match baseValue " + str(baseValue) + ", resetting")
+                    if (DEBUG):
+                        logger.logEvent("#baseline " + str(baseline) + " does not match baseValue " + str(baseValue) + ", resetting")
                     ccs811Sensor.set_baseline(baseValue)
         humidity = bme280Sensor.humidity
         
