@@ -35,7 +35,7 @@ import constants
 import logger
 
 DEBUG=False
-HASPM25=False
+HASPM25=True
 baseline = constants.maxBaseline
 
 def checkBaseline(baseValues):
