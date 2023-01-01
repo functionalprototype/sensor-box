@@ -34,8 +34,8 @@ import smbus
 import constants
 import logger
 
-DEBUG=False
-HASPM25=True
+DEBUG=True
+HASPM25=False
 baseline = constants.maxBaseline
 
 def checkBaseline(baseValues):
@@ -45,28 +45,28 @@ def checkBaseline(baseValues):
         == baseValues[3]
         == baseValues[4]
         == baseValues[5]):
-        logger.logEvent("all baselines equal, returning True")
+        logger.logEvent("#all baselines equal, returning True")
         return True
 
     min = 65530 # initialization level
     max = 0
     for i in baseValues:
-        logger.logEvent ("baseline " + str(i))
+        logger.logEvent ("#baseline " + str(i))
         if (i == 0):
-            logger.logEvent ("0, returning False")
+            logger.logEvent ("#0, returning False")
             return False
         if (i <= min):
             min = i
-            logger.logEvent ("new min " + str(min))
+            logger.logEvent ("#new min " + str(min))
         if (i >= max):
             max = i
-            logger.logEvent ("new max " + str(max))
+            logger.logEvent ("#new max " + str(max))
 
-    logger.logEvent("min max " + str(min) + " " + str(max))
+    logger.logEvent("#min max " + str(min) + " " + str(max))
     noise = (abs (max - min))
     if (noise < 2):
         if (DEBUG):
-            logger.logEvent("noise " + str(noise) + " baselines " + str(baseValues))
+            logger.logEvent("#noise " + str(noise) + " baselines " + str(baseValues))
         return True
 
     return False
@@ -117,7 +117,7 @@ def main():
         if (yesterday != today):
             if (DEBUG):
                 print("yesterday", yesterday, "not equal to today",today)
-                logger.logEvent("yesterday "  + str(yesterday) + " not equal to today " + str(today))
+                logger.logEvent("#yesterday "  + str(yesterday) + " not equal to today " + str(today))
             uptime = os.popen('uptime -s').read() [:-1]
             logger.logSensorHeader("#boot time " + uptime)
             logger.logSensorHeader("time,temp,humid,CO2,tVOC,PM1.0,PM2.5,PM10.0")
@@ -139,7 +139,7 @@ def main():
                 baseline = ccs811Sensor.get_baseline()
                 if (baseline >= constants.maxBaseline):
                     if (DEBUG):
-                        logger.logEvent("baseline too high, using 0: " + str(baseline))
+                        logger.logEvent("#baseline too high, using 0: " + str(baseline))
                     baseline = 0
                 if (DEBUG):
                     logger.logEvent("#baseline " + str(interval) + " min read " + str(baseline))
