@@ -102,7 +102,8 @@ def main():
     baseValue = 0
     baseIndex = 0
 
-    #TODO  if config file is EMPTY, don't try to read it's contents
+    #TODO if config file is EMPTY, don't try to read its contents
+    #TODO convert config file to JSON format
     config = constants.hostname + ".conf"
     if (exists(config)):
         with open(config) as c:
