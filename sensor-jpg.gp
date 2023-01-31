@@ -31,6 +31,9 @@ set style line 6 linetype 1 linewidth 2 linecolor rgb '#000000"
 set style line 7 linetype 1 linewidth 2 linecolor rgb '#808080"
 set style line 8 linetype 1 linewidth 2 linecolor rgb '#d3d3d3"
 
+#set terminal jpeg size 1920,1080 color enhanced "Helvetica" 20
+set terminal jpeg size 1920,1080
+set output "output.jpeg"
 
 #time,temp,humid,CO2,tVOC,PM1.0,PM2.5,PM10.0
 
@@ -41,9 +44,5 @@ plot "all.log" using ($1+(-5*3600)):4 with linespoints linestyle 4, \
      "all.log" using ($1+(-5*3600)):6 with linespoints linestyle 6 axis x1y2, \
      "all.log" using ($1+(-5*3600)):7 with linespoints linestyle 7 axis x1y2, \
      "all.log" using ($1+(-5*3600)):8 with linespoints linestyle 8 axis x1y2
-#set output
-#set terminal jpeg size 1920,1080 color enhanced "Helvetica" 20
-set terminal jpeg size 1920,1080
-set output "output.jpg"
 #     "all.log" using ($1+(-5*3600)):4 with linespoints linestyle 1,\
 #     "all.log" using ($1+(-5*3600)):5  with linespoints linestyle 2,\
