@@ -14,7 +14,8 @@ set datafile separator ","
 
 set title "24 hours local time"
 set xlabel "Time"
-set ylabel "CO2 VOC"
+#set ylabel "CO2 VOC"
+set ylabel "VOC"
 set y2label "temp humid PM1 PM2.5 PM10"
 
 set key outside
